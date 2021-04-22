@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PMD Archives</title>
+</head>
+<body>
+<h1>PMD Archives</h1>
+
+<h2>Documentation</h2>
+<?php
+    $fileList = glob('pmd-*',  GLOB_ONLYDIR);
+    usort($fileList, function($a, $b) {
+        preg_match('/pmd-(\d+)\.(\d+)(?:\.(\d+))?/', $a, $matches_a);
+        preg_match('/pmd-(\d+)\.(\d+)(?:\.(\d+))?/', $b, $matches_b);
+
+        if ($matches_a[1] == $matches_b[1]) {
+            if ($matches_a[2] == $matches_b[2]) {
+                if (isset($matches_a[3]) && isset($matches_b[3])) {
+                    return intval($matches_a[3]) - intval($matches_b[3]);
+                } else if (isset($matches_a[3])) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return intval($matches_a[2]) - intval($matches_b[2]);
+        }
+
+        return intval($matches_a[1]) - intval($matches_b[1]);
+    });
+    $fileList = array_reverse($fileList);
+?>
+<ul>
+<?php foreach($fileList as $filename): ?>
+    <li><a href="<?= $filename ?>/"><?= str_replace("-", " ", $filename) ?></a></li>
+<?php endforeach ?>
+</ul>
+
+<h2>Binaries</h2>
+<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>
+
+</body>
+</html>
